@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Panel</title>
+
+        <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Брандинг (лого/име) -->
+        <a class="navbar-brand" th:href="@{/}">SmartBudget</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMain"
+                aria-controls="navbarMain"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto">
+                <!-- Изход -->
+                <li class="nav-item">
+                    <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    </form>
+                    <a class="nav-link" href="#" onclick="document.getElementById('logout-form').submit();">
+                        Изход</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container flex-grow-1 mt-4">
+    <h1 class="text-center">Администраторски панел</h1>
+<!--<h1>Администраторски панел</h1>-->
+<table>
+    <tr>
+        <th>User ID</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="u : ${users}">
+        <td th:text="${u.id}"></td>
+        <td th:text="${u.email}"></td>
+        <td>
+            <span th:each="r : ${u.roles}" th:text="${r.name}"></span>
+        </td>
+        <td>
+            <form th:action="@{/admin/change-role(userId=${u.id},roleName='ROLE_ADMIN')}" method="post">
+                <button type="submit">Make Admin</button>
+            </form>
+            <form th:action="@{/admin/change-role(userId=${u.id},roleName='ROLE_USER')}" method="post">
+                <button type="submit">Make User</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</div>
+<footer class="bg-dark text-white text-center mt-auto p-3">
+    SmartBudget &copy; 2025. Всички права запазени.
+</footer>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+</body>
+</html>

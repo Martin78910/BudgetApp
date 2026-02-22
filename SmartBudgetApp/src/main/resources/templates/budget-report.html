@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Отчет за бюджета</title>
+
+    <!-- Chart.js от локална директория -->
+<!--    <script th:src="@{/js/chart.min.js}"></script>-->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Навигация -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">SmartBudget</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMain"
+                aria-controls="navbarMain"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/users/profile}">Профил</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/users/accounts}">Сметки</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/users/budgets}">Бюджети</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/users/transactions}">Трансакции</a></li>
+                <li class="nav-item"><a class="nav-link active" th:href="@{/users/budget-report}">Отчет</a></li>
+                <li class="nav-item">
+                    <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    </form>
+                    <a class="nav-link" href="#" onclick="document.getElementById('logout-form').submit();">Изход</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h1 class="text-center">Отчет за разходите: <span th:text="${currentMonth}"></span></h1>
+
+    <!-- Форма за избор -->
+    <div class="row mt-4 mb-4">
+        <div class="col-md-6 offset-md-3">
+            <form th:action="@{/users/budget-report}" method="get" class="row g-3">
+                <div class="col-md-5">
+                    <label for="month" class="form-label">Месец</label>
+                    <select id="month" name="month" class="form-select">
+                        <option value="1" th:selected="${param.month == '1'}">Януари</option>
+                        <option value="2" th:selected="${param.month == '2'}">Февруари</option>
+                        <option value="3" th:selected="${param.month == '3'}">Март</option>
+                        <option value="4" th:selected="${param.month == '4'}">Април</option>
+                        <option value="5" th:selected="${param.month == '5'}">Май</option>
+                        <option value="6" th:selected="${param.month == '6'}">Юни</option>
+                        <option value="7" th:selected="${param.month == '7'}">Юли</option>
+                        <option value="8" th:selected="${param.month == '8'}">Август</option>
+                        <option value="9" th:selected="${param.month == '9'}">Септември</option>
+                        <option value="10" th:selected="${param.month == '10'}">Октомври</option>
+                        <option value="11" th:selected="${param.month == '11'}">Ноември</option>
+                        <option value="12" th:selected="${param.month == '12'}">Декември</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label for="year" class="form-label">Година</label>
+                    <select id="year" name="year" class="form-select">
+                        <option value="2023" th:selected="${param.year == '2023'}">2023</option>
+                        <option value="2024" th:selected="${param.year == '2024'}">2024</option>
+                        <option value="2025" th:selected="${param.year == '2025' || param.year == null}">2025</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">Покажи</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Диаграма и таблица -->
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h5>Общо разходи: <span th:text="${#numbers.formatDecimal(totalExpenses, 0, 2, 'POINT')} + ' лв.'"></span></h5>
+                    </div>
+
+                    <!-- Диаграма -->
+                    <div style="width: 100%; height: 400px;">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+
+                    <!-- Таблица -->
+                    <div class="mt-4">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Категория</th>
+                                <th>Сума (лв.)</th>
+                                <th>% от общото</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${reportData}">
+                                <td th:text="${item.category}">Храна</td>
+                                <td th:text="${#numbers.formatDecimal(item.amount, 0, 2, 'POINT')}">100.00</td>
+                                <td th:text="${#numbers.formatDecimal(item.amount / totalExpenses * 100, 0, 2, 'POINT')} + '%'">20%</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center mt-auto p-3">
+    SmartBudget &copy; 2025. Всички права запазени.
+</footer>
+
+<!-- Chart.js скрипт -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+        const reportData = /*[[${reportData}]]*/ [];
+
+        const labels = reportData.map(item => item.category);
+        const values = reportData.map(item => item.amount);
+        const colors = reportData.map(item => item.color || '#007bff');
+
+        const ctx = document.getElementById('budgetChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: colors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const value = context.raw;
+                                const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                                const percent = ((value / total) * 100).toFixed(2);
+                                return `${context.label}: ${value.toFixed(2)} лв. (${percent}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    /*]]>*/
+</script>
+
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

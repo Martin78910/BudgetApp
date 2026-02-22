@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Контакти - SmartBudget</title>
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Навигация -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">SmartBudget</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/about}">За нас</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/contact}">Контакти</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/login}">Вход</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/register}">Регистрация</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container flex-grow-1 d-flex justify-content-center align-items-center">
+    <div class="row">
+        <div class="col">
+            <h1>Контакти</h1>
+            <p class="lead">
+                Имате въпрос, идея или проблем? Свържете се с нас!
+            </p>
+            <p>
+                Можете да ни намерите на следните координати:
+            </p>
+            <ul>
+                <li>Адрес: ул. "Примерна" №10, гр. София, България</li>
+                <li>Телефон: +359 123 456 789</li>
+                <li>Имейл: newsmartbudgetapp@gmail.com</li>
+            </ul>
+            <hr/>
+
+            <h3>Пишете ни директно</h3>
+            <!-- Форма за изпращане на съобщение -->
+            <form th:action="@{/contact/send}" th:object="${contactFormDto}" method="post" class="needs-validation">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Вашето име</label>
+                    <input type="text" class="form-control" id="name" th:field="*{senderName}">
+                    <div class="text-danger" th:if="${#fields.hasErrors('senderName')}" th:errors="*{senderName}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Вашият имейл</label>
+                    <input type="email" class="form-control" id="email" th:field="*{senderEmail}">
+                    <div class="text-danger" th:if="${#fields.hasErrors('senderEmail')}" th:errors="*{senderEmail}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Съобщение</label>
+                    <textarea class="form-control" id="message" rows="4" th:field="*{message}"></textarea>
+                    <div class="text-danger" th:if="${#fields.hasErrors('message')}" th:errors="*{message}"></div>
+                </div>
+                <button type="submit" class="btn btn-primary">Изпрати</button>
+            </form>
+        </div>
+        <div>
+            <a th:href="@{/about}">За нас</a> |
+            <a th:href="@{/users/login}">Вход</a> |
+            <a th:href="@{/users/register}">Регистрация</a>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-dark text-white text-center mt-5 p-3">
+    SmartBudget &copy; 2025. Всички права запазени.
+</footer>
+
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Моите сметки</title>
+
+        <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Навигация -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Брандинг (лого/име) -->
+        <a class="navbar-brand" th:href="@{/}">SmartBudget</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMain"
+                aria-controls="navbarMain"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto">
+                <!-- Профил -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/profile}">Профил</a>
+                </li>
+                <!-- Сметки -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/accounts}">Сметки</a>
+                </li>
+                <!-- Бюджети -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/budgets}">Бюджети</a>
+                </li>
+                <!-- Трансакции -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/transactions}">Трансакции</a>
+                </li>
+                <!-- Изход -->
+                <li class="nav-item">
+                    <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    </form>
+                    <a class="nav-link" href="#" onclick="document.getElementById('logout-form').submit();">
+                        Изход</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container flex-grow-1 mt-4">
+    <h1 class="text-center">Моите сметки</h1>
+
+    <!-- Таблица с въведени сметки -->
+<table class="table table-striped mt-4">
+    <thead>
+    <tr>
+        <th>Име</th>
+        <th>Тип</th>
+        <th>Баланс</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="acc : ${accounts}">
+        <td th:text="${acc.accountName}"></td>
+        <td th:text="${acc.accountType}"></td>
+        <td th:text="${acc.balance}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Форма за добавяне на нова сметка -->
+<form th:action="@{/users/accounts/create}" th:object="${accountDTO}" method="post" class="row g-3 mt-5">
+    <div class="col-md-4">
+        <label class="form-label">Име на сметка:</label>
+        <input th:field="*{accountName}" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Тип:</label>
+        <input th:field="*{accountType}" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Начален баланс:</label>
+        <input th:field="*{balance}" type="number" />
+    </div>
+    <div class="col-12">
+    <button type="submit">Добави</button>
+    </div>
+</form>
+</div>
+<!-- Footer -->
+<footer class="bg-dark text-white text-center mt-auto p-3">
+    SmartBudget &copy; 2025. Всички права запазени.
+</footer>
+
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+
+
+</body>
+</html>

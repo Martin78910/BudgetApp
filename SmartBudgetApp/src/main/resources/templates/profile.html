@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Моят профил</title>
+        <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Навигация -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Брандинг (лого/име) -->
+        <a class="navbar-brand" th:href="@{/}">SmartBudget</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMain"
+                aria-controls="navbarMain"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto">
+                <!-- Профил -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/profile}">Профил</a>
+                </li>
+                <!-- Сметки -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/accounts}">Сметки</a>
+                </li>
+                <!-- Бюджети -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/budgets}">Бюджети</a>
+                </li>
+                <!-- Трансакции -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/transactions}">Трансакции</a>
+                </li>
+                <!-- Изход -->
+                <li class="nav-item">
+                    <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    </form>
+                    <a class="nav-link" href="#" onclick="document.getElementById('logout-form').submit();">
+                        Изход</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Центрирана форма -->
+<div class="container flex-grow-1 mt-4">
+    <div class="w-100" style="max-width: 500px;">
+        <h1 class="text-center mb-4">Профил на потребителя</h1>
+
+<img th:src="${(user.profilePictureUrl == null or #strings.isEmpty(user.profilePictureUrl))
+                 ? 'https://cdn0.iconfinder.com/data/icons/cryptocurrency-137/128/1_profile_user_avatar_account_person-132-256.png'
+                 : user.profilePictureUrl}"
+     alt="Profile Pic"/>
+<p>Email: <span th:text="${user.email}">user@example.com</span></p>
+<p>Име: <span th:text="${user.fullName}"></span></p>
+<p>Валута: <span th:text="${user.currency}">BGN</span></p>
+
+<div>
+<a th:href="@{/users/profile/update}" class="btn btn-warning">Редакция на профила</a>
+</div>
+
+    </div>
+</div>
+<!-- Footer -->
+<footer class="bg-dark text-white text-center mt-auto p-3">
+    SmartBudget &copy; 2025. Всички права запазени.
+</footer>
+
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>За нас - SmartBudget</title>
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Навигация (пример) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">SmartBudget</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/about}">За нас</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/contact}">Контакти</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/login}">Вход</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/register}">Регистрация</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <div class="container flex-grow-1 mt-4">
+    <div class="row">
+        <div class="col">
+            <h1>За нас</h1>
+            <p class="lead">
+                SmartBudget е модерно уеб приложение, създадено с цел да помага на потребителите
+                да управляват своите финанси, да създават бюджети и да подобряват финансовата си култура.
+            </p>
+            <p>
+                Нашият екип се състои от ентусиасти в сферата на програмирането, финансите и
+                дизайна, обединени от общата идея да предоставим удобен и интуитивен инструмент
+                за всеки, който иска да държи разходите си под контрол.
+            </p>
+            <p>
+                Приложението е разработено с помощта на най-съвременни технологии: 
+                <strong>Spring Boot</strong>, <strong>MySQL</strong>, <strong>Bootstrap</strong> и др.
+                Голяма част от функционалностите са базирани на най-добрите практики в бранша, 
+                за да осигурим надеждно и сигурно потребителско изживяване.
+            </p>
+            <p>
+                Благодарим Ви, че избрахте SmartBudget и се надяваме, че ще Ви помогнем да
+                постигнете Вашите финансови цели по-бързо и по-лесно!
+            </p>
+            
+            <hr/>
+
+            <h3>Нашият екип</h3>
+            <ul>
+                <li><strong>Иван Петров</strong> – Backend разработчик и архитект на системата</li>
+                <li><strong>Мария Георгиева</strong> – Frontend и UX/UI дизайнер</li>
+                <li><strong>Георги Димитров</strong> – AI & Data анализ</li>
+                <li><strong>Петя Василева</strong> – QA и тестова автоматизация</li>
+            </ul>
+
+            <p>
+                Ако искате да разберете повече за нас или за самото приложение, 
+                можете да ни пишете чрез формата в <a th:href="@{/contact}">Контакти</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Footer (пример) -->
+<footer class="bg-dark text-white text-center mt-auto p-3">
+    SmartBudget &copy; 2025. Всички права запазени.
+</footer>
+
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Моите бюджети</title>
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Навигация -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Брандинг (лого/име) -->
+        <a class="navbar-brand" th:href="@{/}">SmartBudget</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMain"
+                aria-controls="navbarMain"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto">
+                <!-- Профил -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/profile}">Профил</a>
+                </li>
+                <!-- Сметки -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/accounts}">Сметки</a>
+                </li>
+                <!-- Бюджети -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/budgets}">Бюджети</a>
+                </li>
+                <!-- Трансакции -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/transactions}">Трансакции</a>
+                </li>
+                <!-- Изход -->
+                <li class="nav-item">
+                    <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+                    </form>
+                    <a class="nav-link" href="#" onclick="document.getElementById('logout-form').submit();">
+                        Изход</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Заглавие на страницата -->
+<div class="container flex-grow-1 mt-4">
+    <h1 class="text-center">Настройки на бюджетите</h1>
+
+    <!-- Филтър по сметка -->
+    <div class="row mb-4">
+        <div class="col-md-4 offset-md-4">
+            <label class="form-label">Филтрирай по сметка:</label>
+            <select class="form-select" id="filter-account-select">
+                <option value="all">Всички сметки</option>
+                <option th:each="acc : ${allAccounts}" th:value="${acc.id}" th:text="${acc.accountName + ' (' + acc.balance + ' лв.)'}"></option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Таблица с въведени бюджети -->
+    <table class="table table-striped mt-4">
+        <thead>
+        <tr>
+            <th>Категория</th>
+            <th>Месечен Лимит</th>
+            <th>Сметка</th>
+        </tr>
+        </thead>
+        <tbody id="budgets-table-body">
+        <tr th:each="b : ${budgets}">
+            <td th:text="${b.category}"></td>
+            <td th:text="${b.monthlyLimit}"></td>
+            <td th:text="${b.accountName != null ? b.accountName : 'Няма данни'}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Форма за добавяне/редакция -->
+    <form id="budget-form" th:action="@{/users/budgets/create}" th:object="${budgetDTO}" method="post" onsubmit="return validateBalance()" class="row g-3 mt-5">
+        <div class="col-md-4">
+            <label class="form-label">Сметка:</label>
+            <select class="form-select" id="account-select" th:field="*{accountId}" onchange="checkSelectedBalance()">
+                <option value="" disabled selected>Избери сметка</option>
+                <option th:each="acc : ${allAccounts}" th:value="${acc.id}" th:text="${acc.accountName + ' (' + acc.balance + ' лв.)'}" th:data-balance="${acc.balance}"></option>
+            </select>
+            <p class="text-danger" th:if="${#fields.hasErrors('accountId')}" th:errors="*{accountId}"></p>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Категория:</label>
+            <select class="form-select" th:field="*{category}">
+                <option value="" disabled selected>Избери категория</option>
+                <option th:each="cat : ${allCategories}" th:value="${cat.code}" th:text="${cat.code}"></option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Месечен лимит:</label>
+            <input th:field="*{monthlyLimit}" type="number" class="form-control" />
+        </div>
+        <p id="balance-warning" style="color:red; display:none;">Не може да създадете бюджет по избраната категория, защото балансът по сметката е 0</p>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Запази</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function checkSelectedBalance() {
+        const select = document.getElementById('account-select');
+        const selectedOption = select.options[select.selectedIndex];
+        const balance = parseFloat(selectedOption.getAttribute('data-balance'));
+        const warning = document.getElementById('balance-warning');
+
+        if (balance === 0) {
+            warning.style.display = 'block';
+        } else {
+            warning.style.display = 'none';
+        }
+    }
+
+    function validateBalance() {
+        const select = document.getElementById('account-select');
+        const selectedOption = select.options[select.selectedIndex];
+        const balance = parseFloat(selectedOption.getAttribute('data-balance'));
+
+        const monthlyLimit = parseFloat(document.querySelector('[name="monthlyLimit"]').value);
+
+        if (isNaN(balance) || isNaN(monthlyLimit)) {
+            return true;
+        }
+
+        if (balance < monthlyLimit) {
+            alert("Балансът по сметката е по-малък от въведения месечен лимит. Моля, изберете друга сметка или въведете по-малък лимит.");
+            return false;
+        }
+        return true;
+    }
+
+    // Нов JavaScript код за филтриране на бюджетите при избор на сметка
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterSelect = document.getElementById('filter-account-select');
+
+        filterSelect.addEventListener('change', function() {
+            const selectedAccountId = this.value;
+
+            if (selectedAccountId === 'all') {
+                // Ако е избрано "Всички сметки", презареждаме страницата без филтър
+                window.location.href = '[[@{/users/budgets}]]';
+            } else {
+                // Иначе правим AJAX заявка за бюджетите по съответната сметка
+                fetch(`/api/budgets/by-account/${selectedAccountId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Грешка при зареждане на данните');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        updateBudgetsTable(data);
+                    })
+                    .catch(error => {
+                        console.error('Възникна грешка:', error);
+                        alert('Грешка при зареждане на бюджетите: ' + error.message);
+                    });
+            }
+        });
+    });
+
+    function updateBudgetsTable(budgets) {
+        const tableBody = document.getElementById('budgets-table-body');
+        tableBody.innerHTML = ''; // Изчистваме таблицата
+
+        if (budgets.length === 0) {
+            // Ако няма бюджети, показваме съобщение
+            const row = document.createElement('tr');
+            const cell = document.createElement('td');
+            cell.colSpan = 3;
+            cell.textContent = 'Няма бюджети за избраната сметка';
+            cell.className = 'text-center';
+            row.appendChild(cell);
+            tableBody.appendChild(row);
+        } else {
+            // Иначе показваме бюджетите
+            budgets.forEach(budget => {
+                const row = document.createElement('tr');
+
+                const categoryCell = document.createElement('td');
+                categoryCell.textContent = budget.category;
+                row.appendChild(categoryCell);
+
+                const limitCell = document.createElement('td');
+                limitCell.textContent = budget.monthlyLimit;
+                row.appendChild(limitCell);
+
+                const accountCell = document.createElement('td');
+                accountCell.textContent = budget.accountName || 'Няма данни';
+                row.appendChild(accountCell);
+
+                tableBody.appendChild(row);
+            });
+        }
+    }
+</script>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center mt-auto p-3">
+    SmartBudget &copy; 2025. Всички права запазени.
+</footer>
+
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

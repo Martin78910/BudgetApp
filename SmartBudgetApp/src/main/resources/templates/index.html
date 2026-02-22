@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SmartBudget - Home</title>
+
+        <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet"/>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">SmartBudget</a>
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/about}">За нас</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/contact}">Контакти</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/login}">Вход</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/users/register}">Регистрация</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container flex-grow-1 mt-4">
+    <div class="row">
+        <div class="col">
+            <h1>SmartBudget</h1>
+            <p>Вашия пръв помощник за умно и ефективно управление на финансите.</p>
+
+            <p>
+                Имате ли нужда от по-добър контрол над финансите си?
+                С помощта на SmartBudget лесно можете да проследявате къде отиват парите ви и да планирате предстоящите си разходи.
+
+            </p>
+
+            <p>
+                Чрез кратки и ясни отчети ще знаете точно къде да оптимизирате бюджета си, без да губите ценно време.
+                Интуитивният интерфейс ви води стъпка по стъпка, независимо дали сте опитен счетоводител или пълен начинаещ.
+
+            </p>
+
+            <p>
+                С SmartBudget не само спестявате време и усилия, но и имате спокойствието, че финансите ви са под контрол.
+                Регистрирайте се сега <a th:href="@{/users/register}">Регистрация</a>  и открийте свободата да управлявате парите си интелигентно.
+                Поставете основите на финансовото си спокойствие, като направите SmartBudget свой доверен партньор.
+
+            </p>
+
+
+<div>
+    <a th:href="@{/about}">За нас</a> | 
+    <a th:href="@{/contact}">Контакти</a> | 
+    <a th:href="@{/users/login}">Вход</a> |
+    <a th:href="@{/users/register}">Регистрация</a>
+</div>
+        </div>
+    </div>
+</div>
+</body>
+
+<footer class="bg-dark text-white text-center mt-auto p-3">
+    SmartBudget &copy; 2025. Всички права запазени.
+</footer>
+
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</html>
